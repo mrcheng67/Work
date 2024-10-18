@@ -3,7 +3,13 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd">
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd
+       http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <!--引入外部属性文件-->
     <context:property-placeholder location="classpath:druid.properties"/>
@@ -46,10 +52,14 @@
 
     <!--2.扫描Mapper接口-->
     <mybatis-spring:scan base-package="com.jinan.mapper"></mybatis-spring:scan>
-<!-- b站学的配置扫描
-    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.jinan.mapper" />
-        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryBean"></property>
-    </bean>
--->
+
+    <!-- 配置Spring开启注解AOP的功能 -->
+    <aop:aspectj-autoproxy/>
+
+    <!-- b站学的配置扫描
+        <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+            <property name="basePackage" value="com.jinan.mapper" />
+            <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryBean"></property>
+        </bean>
+    -->
 </beans>

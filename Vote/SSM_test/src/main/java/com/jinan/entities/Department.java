@@ -1,5 +1,6 @@
 package com.jinan.entities;
 
+
 public class Department {
 
 	private Integer id;

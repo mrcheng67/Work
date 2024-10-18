@@ -15,62 +15,111 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<html>
+<html lang="zh">
 <head>
+    <meta charset="UTF-8">
     <title>所有员工</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+        table {
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        th, td {
+            text-align: center;
+        }
+        th {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .form-inline {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-<div class="col-md-8 column">
-    <form class="form-inline" action="/" method="post" style="float: right">
-        <!--搜索框-->
-        <input type="text" name="queryBookName" class="form-control" placeholder="请输入名称">
-        <input type="submit" value="查询" class="btn btn-primary">
-    </form>
-</div>
-
-<center>
-    <c:if test="${empty requestScope.emps}">
-        <h1>没有任何员工</h1>
-    </c:if>
-    <c:if test="${not empty requestScope.emps}">
-        <h1>员工信息</h1>
-        <table border="1" cellpadding="10" cellspacing="0">
-            <tr>
-                <th>Id</th>
-                <th>LastName</th>
-                <th>Email</th>
-                <th>Gender</th>
-                <th>Department</th>
-                <th colspan="2">操作</th>
-            </tr>
-            <c:forEach items="${requestScope.emps}" var="emp">
-                <tr>
-                    <td>${emp.id}</td>
-                    <td>${emp.lastName}</td>
-                    <td>${emp.email}</td>
-                    <td>
-                        <c:if test="${emp.gender == 1}">
-                            男
-                        </c:if>
-                        <c:if test="${emp.gender == 0}">
-                            女
-                        </c:if>
-                    </td>
-                    <td>${emp.department.departmentName}</td>
-                    <td><a href="${pageContext.request.contextPath}/toup?empId=${emp.id}">Edit</a> </td>
-                    <td><a href="${pageContext.request.contextPath}/del?empId=${emp.id}">删除</a></td>
-                </tr>
-            </c:forEach>
-        </table>
-    </c:if>
-    <br>
-    <br>
-    <div class="row">
-        <div class="col-md-4 column">
-            <a class="btn btn-primary" href="${pageContext.request.contextPath}/toAdd">添加</a>
-        </div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="${pageContext.request.contextPath}/">首页</a>
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="${pageContext.request.contextPath}/voting">投票管理</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="${pageContext.request.contextPath}/getEmployee">用户信息</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="${pageContext.request.contextPath}/personalInfo">个人信息</a>
+            </li>
+        </ul>
     </div>
-</center>
+</nav>
+
+<div class="container mt-5">
+    <div class="row justify-content-end">
+        <form class="form-inline" action="/" method="post">
+            <input type="text" name="queryBookName" class="form-control mr-2" placeholder="请输入名称">
+            <input type="submit" value="查询" class="btn btn-primary">
+        </form>
+    </div>
+
+    <center>
+        <c:if test="${empty requestScope.emps}">
+            <h1>没有任何员工</h1>
+        </c:if>
+        <c:if test="${not empty requestScope.emps}">
+            <h1>员工信息</h1>
+            <table class="table table-bordered">
+                <tr>
+                    <th>Id</th>
+                    <th>LastName</th>
+                    <th>Email</th>
+                    <th>Gender</th>
+                    <th>Department</th>
+                    <th colspan="2">操作</th>
+                </tr>
+                <c:forEach items="${requestScope.emps}" var="emp">
+                    <tr>
+                        <td>${emp.id}</td>
+                        <td>${emp.lastName}</td>
+                        <td>${emp.email}</td>
+                        <td>
+                            <c:if test="${emp.gender == 1}">男</c:if>
+                            <c:if test="${emp.gender == 0}">女</c:if>
+                        </td>
+                        <td>${emp.department.departmentName}</td>
+                        <td><a href="${pageContext.request.contextPath}/toup?empId=${emp.id}" class="btn btn-warning">Edit</a></td>
+                        <td><a href="${pageContext.request.contextPath}/del?empId=${emp.id}" class="btn btn-danger">删除</a></td>
+                    </tr>
+                </c:forEach>
+            </table>
+        </c:if>
+        <br>
+        <div class="row">
+            <div class="col-md-4">
+                <a class="btn btn-primary" href="${pageContext.request.contextPath}/toAdd">添加</a>
+            </div>
+        </div>
+    </center>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
-

@@ -1,5 +1,6 @@
 package com.jinan.controller;
 
+import com.jinan.Annotation.LogAnnotation;
 import com.jinan.entities.Employee;
 import com.jinan.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,30 +23,32 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @RequestMapping(value = "/getEmployee",method = RequestMethod.GET)
+    @LogAnnotation("展示所有人")
     public String getEmployee(Map<String,Object> map){
         //调用EmployeeService中的获取员工的方法
         List<Employee> employees = employeeService.getEmployee();
         map.put("emps",employees);
-        System.out.println(employees);
         return "list";
     }
-    //跳转到添加书籍页面
+    //跳转到添加页面
+    @LogAnnotation("跳转到添加人物网页")
     @RequestMapping("/toAdd")
     public String toAddNumber(){
         return "add";
     }
 
-    //添加书籍的请求
+    //添加请求
+    @LogAnnotation("添加人物")
     @RequestMapping("/add")
     public String addNumber(Employee e){
         employeeService.insertEmployee(e);
         return "redirect:/getEmployee"; //重定向到@RequestMapping("/allBook")请求
     }
-    //添加书籍的请求
+    //删除请求
+    @LogAnnotation("删除人物")
     @RequestMapping("/del")
     public String DelNumber(@RequestParam("empId")Integer i){
         employeeService.delEmployee(i);
-        System.out.println("i = "+i);
         return "redirect:/getEmployee"; //重定向到@RequestMapping("/allBook")请求
     }
 
