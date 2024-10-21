@@ -2,7 +2,7 @@ package com.jinan.Annotation;
 
 import java.lang.annotation.*;
 
-@Target({ElementType.TYPE,ElementType.METHOD})
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface LogAnnotation {

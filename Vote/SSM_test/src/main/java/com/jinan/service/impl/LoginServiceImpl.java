@@ -1,7 +1,6 @@
 package com.jinan.service.impl;
 
 
-import com.jinan.Annotation.LogAnnotation;
 import com.jinan.entities.Login;
 import com.jinan.mapper.LoginMapper;
 import com.jinan.service.LoginService;

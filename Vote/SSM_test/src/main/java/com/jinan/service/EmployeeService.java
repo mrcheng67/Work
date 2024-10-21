@@ -12,6 +12,8 @@ public interface EmployeeService {
 
     List<Employee> getEmployee();
 
+    Employee findUserById(Integer id);
+
     void insertEmployee(Employee e);
 
     void delEmployee(Integer i);

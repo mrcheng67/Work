@@ -5,16 +5,9 @@
   Time: 22:11
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: GH
-  Date: 2021/2/12
-  Time: 2:14
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
@@ -70,11 +63,15 @@
         </ul>
     </div>
 </nav>
-
+<div>
+    todo zijiu.wa test
+    ${requestScope.emps}
+</div>
 <div class="container mt-5">
     <div class="row justify-content-end">
-        <form class="form-inline" action="/" method="post">
-            <input type="text" name="queryBookName" class="form-control mr-2" placeholder="请输入名称">
+        <!-- 修改表单的 action 和添加员工 ID 输入字段 -->
+        <form class="form-inline" action="${pageContext.request.contextPath}/getOne" method="get">
+            <input type="text" name="id" class="form-control mr-2" placeholder="请输入员工ID">
             <input type="submit" value="查询" class="btn btn-primary">
         </form>
     </div>

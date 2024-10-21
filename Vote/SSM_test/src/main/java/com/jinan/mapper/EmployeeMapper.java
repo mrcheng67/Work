@@ -2,6 +2,8 @@ package com.jinan.mapper;
 
 import com.jinan.entities.Employee;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -10,12 +12,15 @@ import java.util.List;
  * Created by GH on 2021/2/12
  */
 @Mapper
+@Repository
 public interface EmployeeMapper {
     List<Employee> getEmployees();
 
-   void insertEmployee(Employee e);
+    Employee findUserById(Integer id);
 
-   void delEmployee(Integer i);
+    void insertEmployee(Employee e);
 
-   void updateEmployee(Employee e);
+    void delEmployee(Integer i);
+
+    int updateEmployee(Employee e);
 }
