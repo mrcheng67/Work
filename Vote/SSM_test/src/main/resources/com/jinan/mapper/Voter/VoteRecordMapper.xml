@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinan.mapper.Voter.VoteRecordMapper">
+
+    <resultMap id="VoteRecordResultMap" type="com.jinan.entities.Voter.VoteRecord">
+        <id property="recordId" column="record_id"/>
+        <result property="voterName" column="voter_name"/>
+        <result property="voteId" column="vote_id"/>
+        <result property="optionId" column="option_id"/>
+        <result property="voteCount" column="vote_count"/>
+    </resultMap>
+
+    <!-- 定义 resultMap -->
+    <resultMap id="map" type="com.jinan.entities.Voter.VoteRecord">
+        <result property="voterName" column="voter_name"/>
+        <result property="voteId" column="vote_id"/>
+        <result property="voteCount" column="vote_count"/>
+        <result property="optionId" column="option_id"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.jinan.entities.Voter.VoteRecord" useGeneratedKeys="true" keyProperty="recordId">
+        INSERT INTO vote_records (voter_name, vote_id, option_id, vote_count)
+        VALUES (#{voterName}, #{voteId}, #{optionId}, #{voteCount})
+    </insert>
+
+
+    <!-- 查询 vote_count 的 SQL 语句 -->
+    <select id="selectByUseNameAndId" parameterType="map" resultType="Integer">
+        SELECT vote_count
+        FROM vote_records
+        WHERE voter_name = #{voterName} AND vote_id = #{voteId} AND option_id = #{optionId}
+    </select>
+
+    <select id="selectByVoteId" parameterType="int" resultMap="VoteRecordResultMap">
+        SELECT * FROM vote_records WHERE vote_id = #{voteId}
+    </select>
+
+    <update id="update" parameterType="com.jinan.entities.Voter.VoteRecord">
+        UPDATE vote_records
+        SET voter_name = #{voterName}, vote_id = #{voteId}, option_id = #{optionId}, vote_count = #{voteCount}
+        WHERE voter_name = #{voterName} AND vote_id = #{voteId} AND option_id = #{optionId}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM vote_records WHERE record_id = #{recordId}
+    </delete>
+</mapper>

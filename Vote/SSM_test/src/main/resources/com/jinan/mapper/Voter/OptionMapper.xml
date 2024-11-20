@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinan.mapper.Voter.OptionMapper">
+
+    <resultMap id="OptionResultMap" type="com.jinan.entities.Voter.Options">
+        <id property="optionId" column="option_id"/>
+        <result property="voteId" column="vote_id"/>
+        <result property="optionText" column="option_text"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.jinan.entities.Voter.Options" useGeneratedKeys="true" keyProperty="optionId">
+        INSERT INTO OPTIONS (vote_id, option_text)
+        VALUES (#{voteId}, #{optionText})
+    </insert>
+
+    <select id="selectById" parameterType="int" resultMap="OptionResultMap">
+        SELECT * FROM OPTIONS WHERE option_id = #{optionId}
+    </select>
+
+    <select id="selectByVoteId" parameterType="int" resultMap="OptionResultMap">
+        SELECT * FROM OPTIONS WHERE vote_id = #{voteId}
+    </select>
+
+    <update id="update" parameterType="com.jinan.entities.Voter.Options">
+        UPDATE OPTIONS
+        SET option_text = #{optionText}
+        WHERE option_id = #{optionId}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM OPTIONS WHERE option_id = #{optionId}
+    </delete>
+</mapper>

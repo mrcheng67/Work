@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    创建接口对应的SQL映射文件（Mapper映射文件）
+    namespace属性：指定为接口的全类名
+-->
+<mapper namespace="com.jinan.mapper.UserLogin.LoginMapper">
+    <select id="findUserByName" resultMap="login">
+        select * from admin where username = #{username}
+    </select>
+
+    <select id="loginSuccess" resultMap="login">
+        select * from admin where username = #{username} and password = #{passwd}
+    </select>
+
+    <!--自定义高级映射-->
+    <resultMap id="login" type="com.jinan.entities.UserLogin.Login">
+        <!--映射文件-->
+        <result property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="passwd" column="password"/>
+        <result property="name" column="name"/>
+        <result property="phone" column="phone"/>
+        <result property="note" column="note"/>
+    </resultMap>
+</mapper>

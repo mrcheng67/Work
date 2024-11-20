@@ -45,7 +45,7 @@ public class LogAspect{
         return point.proceed();
     }
 
-    @Before("execution(* com.jinan.service.impl.*.*(..))")
+    @Before("execution(* com.jinan.service.User.impl.*.*(..))")
     public void beforeAdvice(JoinPoint joinPoint) {
         // 获取连接点的签名信息
         Signature signature = joinPoint.getSignature();
@@ -57,7 +57,6 @@ public class LogAspect{
         System.out.println("方法名：" + methodName);
 
     }
-
 
 }
 /*

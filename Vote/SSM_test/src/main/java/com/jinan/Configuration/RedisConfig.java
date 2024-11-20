@@ -103,7 +103,7 @@ public class RedisConfig extends CachingConfigurerSupport {
      * 对redis 链表list类型数据操作
      */
     @Bean
-    public ListOperations<String,Object>listOperations(RedisTemplate<String,Object> redisTemplate){
+    public ListOperations<String,Object> listOperations(RedisTemplate<String,Object> redisTemplate){
         return redisTemplate.opsForList();
     }
     /**

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinan.mapper.Voter.VoteMapper">
+    <resultMap id="VoteResultMap" type="com.jinan.entities.Voter.Vote">
+        <id property="voteId" column="vote_id"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="createdBy" column="created_by"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="isActive" column="is_active"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.jinan.entities.Voter.Vote" useGeneratedKeys="true" keyProperty="voteId">
+        INSERT INTO votes (title, description, created_by, is_active)
+        VALUES (#{title}, #{description}, #{createdBy}, #{isActive})
+    </insert>
+
+    <select id="selectById" parameterType="int" resultMap="VoteResultMap">
+        SELECT * FROM votes WHERE vote_id = #{voteId}
+    </select>
+
+    <select id="selectAll" resultMap="VoteResultMap">
+        SELECT v.*, a.name AS createName
+        FROM votes v
+                 JOIN admin a ON v.created_by = a.id
+    </select>
+
+    <update id="update" parameterType="com.jinan.entities.Voter.Vote">
+        UPDATE votes
+        SET title = #{title}, description = #{description}, is_active = #{isActive}
+        WHERE vote_id = #{voteId}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM votes WHERE vote_id = #{voteId}
+    </delete>
+</mapper>
