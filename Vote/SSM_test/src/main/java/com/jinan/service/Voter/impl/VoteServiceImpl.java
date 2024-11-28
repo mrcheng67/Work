@@ -61,7 +61,6 @@ public class VoteServiceImpl implements VoteService {
         if (optionalVote.isPresent()) {
             Vote vote = optionalVote.get();
             List<Options> options = optionMapper.selectByVoteId(voteId);
-
             vote.setOptions(options);
             return vote;
         }

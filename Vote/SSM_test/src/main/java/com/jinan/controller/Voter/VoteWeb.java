@@ -1,23 +1,19 @@
 package com.jinan.controller.Voter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jinan.Configuration.JwtConfig;
-import com.jinan.Utils.SaveToTime;
-import com.jinan.entities.User.Employee;
+
+import com.jinan.Utils.WebsocketHandler;
+
 import com.jinan.entities.UserLogin.Login;
-import com.jinan.entities.Voter.Options;
+
 import com.jinan.entities.Voter.Vote;
 import com.jinan.entities.Voter.VoteRecord;
-import com.jinan.obstacle.Identify;
-import com.jinan.service.Chat.WebSocketService;
-import com.jinan.service.User.EmployeeService;
-import com.jinan.service.User.impl.EmployeeServiceImpl;
+import com.jinan.Utils.Identify;
 import com.jinan.service.UserLogin.LoginService;
 import com.jinan.service.Voter.OptionService;
 import com.jinan.service.Voter.VoteRecordService;
 import com.jinan.service.Voter.VoteService;
-import io.jsonwebtoken.Claims;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -32,17 +28,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.nio.channels.Channel;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ThreadPoolExecutor;
+
 @Slf4j
 @Controller
 public class VoteWeb {
-
+    @Autowired
+    Identify identify;
     @Autowired
     private TransactionTemplate transactionTemplate;
     @Resource
@@ -54,15 +48,11 @@ public class VoteWeb {
     @Autowired
     private LoginService loginService;
 
-//    @Autowired
-//    private WebSocketService webSocketService;
+    @Autowired
+    private WebsocketHandler handler;
 
     @RequestMapping(value = "/vote/vote")
     public String getVoteRecords(Map<String,Object> map) {
-//        String channelId = (String) map.get("channelId");
-//        String username = (String) map.get("username");
-//        webSocketService.setUserName(channelId, username);      // 网页登录时绑定channel与用户
-
         List<Vote> voteRecords = voteService.getAllVotes();
         map.put("Records", voteRecords);
         return "/vote/voteRecords";
@@ -94,7 +84,7 @@ public class VoteWeb {
         try {
             voteRecord.setVoteId(Integer.parseInt(requestBody.get("voteId")));
             voteRecord.setOptionId(Integer.parseInt(requestBody.get("optionId")));
-            voteRecord.setVoterName(Identify.GetName(token));       // 得到Jwt加密的令牌中的值
+            voteRecord.setVoterName(identify.GetName(token));       // 得到Jwt加密的令牌中的值
 
             //  保存投票记录
             boolean insert = voteRecordService.InsertVoteRecord(voteRecord);
@@ -122,7 +112,7 @@ public class VoteWeb {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", "无效的令牌"));
         }
         token = token.substring(7); // Remove "Bearer " prefix
-        String name = Identify.GetName(token);
+        String name = identify.GetName(token);
         Login login = loginService.findUserByName(name);        // 查找用户
         if(login == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", "未找到用户，登录信息问题"));
@@ -134,16 +124,16 @@ public class VoteWeb {
                     System.out.println(" ------------------------ 插入了投票 ");
                     Map<String, Object> map = objectMapper.readValue(requestBody, Map.class);   // 解析 JSON 字符串为 Map<String, Object>
                     System.out.println(map);
-                    int Vote_id = voteService.createVote(map,login);                       // 创建投票
+                    int voteId = voteService.createVote(map, login);                       // 创建投票
 
-                    ArrayList<Object> lists = (ArrayList<Object>) map.get("options");    // 访问嵌套的 Map 选项。
-                    for(Object list: lists){
-                        optionService.createOption(Vote_id,list);
+                    ArrayList<Object> options = (ArrayList<Object>) map.get("options");    // 访问嵌套的 Map 选项。
+                    for (Object option : options) {
+                        optionService.createOption(voteId, option);
                     }
 
                 } catch (IOException e) {
-                    log.info("创建投票失败 : " + e);
-                    e.printStackTrace();
+                    log.error("创建投票失败 : " + e.getMessage(), e);
+                    status.setRollbackOnly();                   // 设置事务回滚
                 }
             }
         });

@@ -1,18 +1,34 @@
 package com.jinan.entities.Chat;
-
+import java.util.Date;
 
 public class chatMessage<T> {
-    private Long id;
-    private String userName;
+    private Integer id;
+    private Integer from;
+    private Integer to;
     private String message;
     private T CreateTime;
 
-    public void setId(Long id) {
+    @Override
+    public String toString() {
+        return "chatMessage{" +
+                "id=" + id +
+                ", from='" + from + '\'' +
+                ", to='" + to + '\'' +
+                ", message='" + message + '\'' +
+                ", CreateTime=" + CreateTime +
+                '}';
+    }
+
+    public void setTo(Integer to) {
+        this.to = to;
+    }
+
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setFrom(Integer from) {
+        this.from = from;
     }
 
     public void setMessage(String message) {
@@ -23,12 +39,15 @@ public class chatMessage<T> {
         CreateTime = createTime;
     }
 
-    public Long getId() {
+    public Integer getTo() {
+        return to;
+    }
+    public Integer getId() {
         return id;
     }
 
-    public String getUserName() {
-        return userName;
+    public Integer getFrom() {
+        return from;
     }
 
     public String getMessage() {
@@ -39,13 +58,4 @@ public class chatMessage<T> {
         return CreateTime;
     }
 
-    @Override
-    public String toString() {
-        return "chatMessage{" +
-                "id=" + id +
-                ", userName='" + userName + '\'' +
-                ", message='" + message + '\'' +
-                ", CreateTime=" + CreateTime +
-                '}';
-    }
 }

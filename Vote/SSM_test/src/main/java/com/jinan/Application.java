@@ -1,6 +1,7 @@
 package com.jinan;
 
 import jakarta.servlet.jsp.jstl.core.Config;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.support.*;
 import org.springframework.context.annotation.AnnotationConfigUtils;
@@ -8,11 +9,13 @@ import org.springframework.context.annotation.AnnotationConfigUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.context.annotation.ComponentScan;
 
 
+//@MapperScan(basePackages = "com.jinan.mapper")
+//@ImportResource({"classpath:beans.xml"})
 @ServletComponentScan // 开启对Servlet的支持
 @SpringBootApplication()
-//@ImportResource({"classpath:beans.xml"})
 public class Application {
 
     public static void main(String[] args){
@@ -34,13 +37,11 @@ public class Application {
             System.out.println(">>>>>>>>>>" + beanName);
         }
 
-
         ApplicationContext app = new ClassPathXmlApplicationContext("beans.xml");
         ApplicationContext bpp = new ClassPathXmlApplicationContext("beans.xml");
         LoginService service = app.getBean(LoginService.class);
         EmployeeService controller = bpp.getBean(EmployeeService.class);
         controller.findUserById(1);
         System.out.println(service.loginSuccess("mrcheng","123"));*/
-
     }
 }

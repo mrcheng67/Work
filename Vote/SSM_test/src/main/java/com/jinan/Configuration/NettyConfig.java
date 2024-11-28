@@ -36,7 +36,6 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketServerCompressionHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 
-
 /**
  * 初始化Netty服务
  * @author CH
@@ -62,12 +61,13 @@ public class NettyConfig implements ApplicationRunner, ApplicationListener<Conte
 
     private Channel serverChannel;
 
+    @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
 
+    @Override
     public void run(ApplicationArguments args) throws Exception {
-
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
@@ -79,44 +79,45 @@ public class NettyConfig implements ApplicationRunner, ApplicationListener<Conte
                 @Override
                 protected void initChannel(SocketChannel socketChannel) throws Exception {  // 业务逻辑处理器
                     ChannelPipeline pipeline = socketChannel.pipeline();
-                    pipeline.addLast(new HttpServerCodec());
-                    pipeline.addLast(new ChunkedWriteHandler());
-                    pipeline.addLast(new HttpObjectAggregator(65536));
+                    pipeline.addLast(new HttpServerCodec());                  // HTTP 编解码器
+                    pipeline.addLast(new ChunkedWriteHandler());              // 支持大文件传输
+                    pipeline.addLast(new HttpObjectAggregator(65536));        // 聚合 HTTP 消息
                     pipeline.addLast(new ChannelInboundHandlerAdapter() {
                         @Override
                         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                            if(msg instanceof FullHttpRequest) {
+                            if (msg instanceof FullHttpRequest) {
                                 FullHttpRequest fullHttpRequest = (FullHttpRequest) msg;
                                 String uri = fullHttpRequest.uri();
                                 if (!uri.equals(path)) {
-                                    // 访问的路径不是 websocket的端点地址，响应404
+                                    // 访问的路径不是 WebSocket 的端点地址，响应404
                                     ctx.channel().writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NOT_FOUND))
                                             .addListener(ChannelFutureListener.CLOSE);
-                                    return ;
+                                    return;
                                 }
                             }
                             super.channelRead(ctx, msg);
                         }
                     });
-                    pipeline.addLast(new WebSocketServerCompressionHandler());
-                    pipeline.addLast(new WebSocketServerProtocolHandler(path, null, true, maxFrameSize));
+                    pipeline.addLast(new WebSocketServerCompressionHandler()); // WebSocket 压缩处理器
+                    pipeline.addLast(new WebSocketServerProtocolHandler(path, null, true, maxFrameSize)); // WebSocket 协议处理器
 
                     /**
-                     * 从IOC中获取到Handler
+                     * 从 IOC 中获取到 Handler
                      */
                     pipeline.addLast(applicationContext.getBean(WebsocketHandler.class));
                 }
             });
             Channel channel = serverBootstrap.bind().sync().channel();      // bind() 绑定端口 sync同步操作，保证绑定完才继续往下走
             this.serverChannel = channel;
-            LOGGER.info("websocket 服务启动，ip={},port={}", this.ip, this.port);
-            channel.closeFuture().sync();
+            LOGGER.info("websocket 服务启动，ip={}, port={}", this.ip, this.port);
+            channel.closeFuture().sync();       // 等待监听关闭的信号
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
     }
 
+    @Override
     public void onApplicationEvent(ContextClosedEvent event) {
         if (this.serverChannel != null) {
             this.serverChannel.close();

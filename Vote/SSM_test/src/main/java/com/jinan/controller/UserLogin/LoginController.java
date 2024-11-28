@@ -1,16 +1,14 @@
 package com.jinan.controller.UserLogin;
 
-import com.jinan.Configuration.JwtConfig;
 import com.jinan.entities.UserLogin.Login;
-import com.jinan.obstacle.Identify;
+import com.jinan.Utils.Identify;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+
 import com.jinan.entities.UserLogin.Result;
 
 import jakarta.servlet.http.HttpServletRequest;

@@ -127,17 +127,27 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div id="chatMessages" style="max-height: 300px; overflow-y: auto;">
-                    <!-- 聊天消息会在这里显示 -->
-                </div>
-                <form id="chatForm">
-                    <div class="input-group">
-                        <input type="text" id="chatInput" class="form-control" placeholder="输入消息..." required>
-                        <div class="input-group-append">
-                            <button type="submit" class="btn btn-primary">发送</button>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="list-group" id="userList">
+                            <!-- 在线用户列表会在这里显示 -->
                         </div>
                     </div>
-                </form>
+                    <div class="col-md-8">
+                        <div id="chatMessages" style="max-height: 300px; overflow-y: auto;">
+                            <!-- 聊天消息会在这里显示 -->
+                        </div>
+                        <form id="chatForm">
+                            <div class="input-group">
+                                <input type="text" id="chatInput" class="form-control" placeholder="输入消息..." required>
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-primary">发送</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <hr>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
@@ -157,12 +167,29 @@
 
         socket.onopen = function() {
             console.log('Connected to WebSocket server');
+
+            // 发送初始化消息，包含用户的 token 和其他信息
+            const token = localStorage.getItem('loginToken') || ''; // 从 LocalStorage 获取 token
+            console.log("token = " + token);
+            const initMessage = JSON.stringify({token: token, to: "init", message: "init"});
+            socket.send(initMessage);
         };
 
         socket.onmessage = function(event) {
-            console.log('Received message: ' + event.data);
-            $('#chatMessages').append('<div class="chat-message"><strong>服务器：</strong>' + event.data + '</div>');
-            $('#chatMessages').scrollTop($('#chatMessages')[0].scrollHeight);
+            const token = localStorage.getItem('loginToken') || '';
+            console.log("接收到了")
+            const data = event.data;
+            console.log(data);
+            if (data.startsWith("onlineUsers:")) {
+                console.log("处理初始化消息" + token);
+                // 更新在线用户列表
+                const result = data.substring("onlineUsers:".length).slice(1, -1).split(",");
+                updateOnlineUsersList(result);
+            } else {
+                console.log("处理普通消息" + token);
+                // 处理普通消息
+                handleChatMessage(data);
+            }
         };
 
         socket.onclose = function(event) {
@@ -176,23 +203,20 @@
 
     function sendChatMessage() {
         const message = $('#chatInput').val();
-        if (message.trim() !== '') {
+        const toUsername = $('#userList .active').text();// 获取选中的用户名
+        if (message.trim() !== '' && toUsername) {
             // 将消息添加到聊天窗口
             $('#chatMessages').append('<div class="chat-message"><strong>你：</strong>' + message + '</div>');
-
-            // 将消息保存到 LocalStorage
-            let chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || [];
-            chatHistory.push(message);
-            localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
 
             // 清空输入框
             $('#chatInput').val('');
             // 滚动到底部
             $('#chatMessages').scrollTop($('#chatMessages')[0].scrollHeight);
-
             // 将消息发送到 WebSocket 服务器
             if (socket && socket.readyState === WebSocket.OPEN) {
-                socket.send(message);
+                const token = localStorage.getItem('loginToken') || '';
+                const messageData = JSON.stringify({token: token, to: toUsername, message: message});
+                socket.send(messageData);
             } else {
                 console.error('WebSocket connection is not open');
             }
@@ -200,29 +224,35 @@
         return false; // 阻止表单默认提交，防止模态框关闭
     }
 
+    function updateOnlineUsersList(users) {
+        const userListElement = $('#userList');
+        userListElement.empty();
+        users.forEach(user => {
+            const listItem = $('<a href="#" class="list-group-item list-group-item-action">' + user + '</a>');
+            listItem.click(function() {
+                userListElement.find('.active').removeClass('active');
+                $(this).addClass('active');
+            });
+            userListElement.append(listItem);
+        });
+    }
+
+    function handleChatMessage(data) {
+        const messageParts = data.split(": ");
+        const token = messageParts[0].replace("From ", "");
+        const messageContent = messageParts.slice(1).join(": ");
+        console.log("处理普通消息,到了函数里面" + token);
+        // 将消息添加到聊天窗口
+        $('#chatMessages').append('<div class="chat-message"><strong>' + token + '：</strong>' + messageContent + '</div>');
+        $('#chatMessages').scrollTop($('#chatMessages')[0].scrollHeight);
+    }
+
     $(document).ready(function() {
-        // 初始化模态框
-        $('#chatModal').modal({
-            show: false
-        });
-
-        // 绑定表单提交事件
-        $('#chatForm').on('submit', function(event) {
-            event.preventDefault(); // 阻止表单的默认提交行为
-            sendChatMessage();
-        });
-
-        // 从 LocalStorage 恢复聊天记录
-        let chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || [];
-        chatHistory.forEach(message => {
-            $('#chatMessages').append('<div class="chat-message"><strong>你：</strong>' + message + '</div>');
-        });
-
         // 连接到 WebSocket 服务器
         connectWebSocket();
 
-        // 滚动到底部
-        $('#chatMessages').scrollTop($('#chatMessages')[0].scrollHeight);
+        // 绑定发送消息表单的提交事件
+        $('#chatForm').submit(sendChatMessage);
     });
 </script>
 </body>
