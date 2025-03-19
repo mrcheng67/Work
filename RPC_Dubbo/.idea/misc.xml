@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/Consumer/pom.xml" />
+        <option value="$PROJECT_DIR$/Provider/pom.xml" />
+        <option value="$PROJECT_DIR$/Provider-Common/pom.xml" />
+        <option value="$PROJECT_DIR$/RPCService/pom.xml" />
+        <option value="$PROJECT_DIR$/NIO-Selector/pom.xml" />
+        <option value="$PROJECT_DIR$/Tomcat_Demo/pom.xml" />
+        <option value="$PROJECT_DIR$/Z-NIO-Selector/pom.xml" />
+        <option value="$PROJECT_DIR$/Spi_Demo/pom.xml" />
+        <option value="$PROJECT_DIR$/Z_Spi_Demo/pom.xml" />
+        <option value="$PROJECT_DIR$/Z_Spi_Demo1/pom.xml" />
+      </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/Z_Spi_Demo/pom.xml" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_22">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>

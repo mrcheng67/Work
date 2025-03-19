@@ -1,0 +1,30 @@
+// 这个Servlet没有处理请求与Servlet的关系，所以
+
+
+package cn.jinan;
+
+
+import cn.jinan.Abstract.MyHttpServletRequest;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+/**
+ * @author CH
+ * @title MyServlet
+ * @date 2024/12/3 20:56
+ * @description TODO
+ */
+@WebServlet(urlPatterns = "cheng")
+public class MyServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("程序运行到了Response层");
+        resp.getOutputStream().write("Hello,World".getBytes());
+    }
+}
+

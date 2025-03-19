@@ -40,7 +40,7 @@ public class DelayedTask<T> implements Delayed {
     @Override
     public int compareTo(Delayed other) {
         // 获取当前任务时间和其他任务时间的 差
-        Long i = this.getDelay(TimeUnit.SECONDS) -other.getDelay(TimeUnit.SECONDS);
+        Long i = this.getDelay(TimeUnit.SECONDS) - other.getDelay(TimeUnit.SECONDS);
         return i.intValue();
     }
 }

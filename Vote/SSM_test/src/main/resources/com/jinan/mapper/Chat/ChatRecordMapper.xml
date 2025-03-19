@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jinan.mapper.Chat.ChatRecordMapper">
+    <insert id="AddMessage" parameterType="com.jinan.entities.Chat.chatMessage" >
+        insert into messages(ufrom_id,uto_id,message,created_at)
+        values(#{from},#{to},#{message},#{CreateTime})
+    </insert>
+
+    <select id="selectMessage" resultMap="message" parameterType="java.lang.Integer">
+        select m.*
+        from messages m
+                 where ufrom_id = #{from} or uto_id = #{to}
+    </select>
+
+    <resultMap id="message" type="com.jinan.entities.Chat.chatMessage">
+        <id column="id" property="id"></id>
+        <result column="ufrom_id" property="from"></result>
+        <result column="uto_id" property="to"></result>
+        <result column="message" property="message"></result>
+        <result column="created_at" property="CreateTime"></result>
+    </resultMap>
+</mapper>

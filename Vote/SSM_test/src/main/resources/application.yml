@@ -21,9 +21,9 @@ spring:
 
   mvc:
     jsp:
-      el-expression-prefix: ${elExpressionPrefix:=${}}
+      #el-expression-prefix: ${elExpressionPrefix:=${}}
     view:
-      prefix: /WEB-INF/views/
+      prefix: ./views/
       suffix: .jsp
 
   datasource:

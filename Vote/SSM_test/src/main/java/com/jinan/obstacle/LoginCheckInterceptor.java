@@ -2,7 +2,7 @@
 //
 //import com.alibaba.fastjson2.JSONObject;
 //import com.jinan.Configuration.JwtConfig;
-//import com.jinan.entities.Login.Result;
+//import com.jinan.entities.UserLogin.Result;
 //import jakarta.servlet.http.HttpServletRequest;
 //import jakarta.servlet.http.HttpServletResponse;
 //import lombok.extern.slf4j.Slf4j;

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="Provider-Common" />
+        <module name="NIO-Selector" />
+        <module name="Z-NIO-Selector" />
+        <module name="Consumer" />
+        <module name="RPCService" />
+        <module name="Z_Spi_Demo1" />
+        <module name="Tomcat_Demo" />
+        <module name="Provider" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="NIO-Selector" target="1.8" />
+      <module name="Z_Spi_Demo" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

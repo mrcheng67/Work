@@ -23,12 +23,14 @@ public class LoginController {
     Identify identify;
     @GetMapping("/")
     public String home() {
+        System.out.println("到了首页Get");
         return "/index";
     }
 
     @ResponseBody
     @PostMapping(value = "/")
     public Result<? extends Object> login(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        System.out.println("到了首页Post");
         String username = request.getParameter("username");//获取前台传入的数据(username) 根据标签name获取
         String password = request.getParameter("password");
 
@@ -36,13 +38,12 @@ public class LoginController {
         System.out.println("username = "+username+"     password = "+password);
         if(is != null){
             //使用JWT工具类，生成身份令牌
-            String token = Identify.JwtSyn(is.getUsername(),is.getPasswd(),is.getName());
+            String token = identify.JwtSyn(is.getUsername(),is.getPasswd(),is.getName());
 
             System.out.println("-- 可以成功登录 --");
             return Result.success(token);
         }
         // 使用@Slf4j注解生成的日志对象
-
 
         return Result.error("用户名或密码错误");
     }

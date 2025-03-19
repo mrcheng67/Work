@@ -18,6 +18,7 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -47,9 +48,10 @@ public class VoteWeb {
     private OptionService optionService;
     @Autowired
     private LoginService loginService;
-
     @Autowired
     private WebsocketHandler handler;
+    @Autowired
+    private RedisTemplate<String,Object> redisTemplate;
 
     @RequestMapping(value = "/vote/vote")
     public String getVoteRecords(Map<String,Object> map) {
@@ -84,12 +86,14 @@ public class VoteWeb {
         try {
             voteRecord.setVoteId(Integer.parseInt(requestBody.get("voteId")));
             voteRecord.setOptionId(Integer.parseInt(requestBody.get("optionId")));
-            voteRecord.setVoterName(identify.GetName(token));       // 得到Jwt加密的令牌中的值
-
-            //  保存投票记录
-            boolean insert = voteRecordService.InsertVoteRecord(voteRecord);
-            if(insert){
-                return ResponseEntity.ok(Map.of("success", true, "message", "投票成功"));
+            voteRecord.setVoterName(identify.GetName(token));                       // 得到Jwt加密的令牌中的值
+            String name = identify.GetRealName(token);                              // reids 中查自己的登录状态
+            if(Boolean.TRUE.equals(redisTemplate.hasKey("login" + name))){
+                //  保存投票记录
+                boolean insert = voteRecordService.InsertVoteRecord(voteRecord);
+                if(insert){
+                    return ResponseEntity.ok(Map.of("success", true, "message", "投票成功"));
+                }
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("success", false, "message", "投票失败：投票次数大于 3"));
         } catch (Exception e) {

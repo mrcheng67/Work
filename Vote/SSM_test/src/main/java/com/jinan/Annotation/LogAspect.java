@@ -1,7 +1,5 @@
 package com.jinan.Annotation;
 
-
-
 import java.lang.reflect.Method;
 import com.jinan.Annotation.LogAnnotation;
 import org.aspectj.lang.JoinPoint;
